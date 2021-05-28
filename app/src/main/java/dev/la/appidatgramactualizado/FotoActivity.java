@@ -13,6 +13,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -106,8 +107,17 @@ public class FotoActivity extends AppCompatActivity {
         Intent mediaScanIntent = new Intent(
                 Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(mRutaFotoActual);
-        Uri contentUri = Uri.fromFile(f);
-        mediaScanIntent.setData(contentUri);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+            Uri contentUri = FileProvider.getUriForFile(
+                    getApplicationContext(),
+                    "dev.la.appidatgramactualizado.provider",
+                    f
+            );
+            mediaScanIntent.setData(contentUri);
+        }else{
+            Uri contentUri = Uri.fromFile(f);
+            mediaScanIntent.setData(contentUri);
+        }
         this.sendBroadcast(mediaScanIntent);
     }
 
